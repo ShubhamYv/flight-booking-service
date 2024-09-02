@@ -39,7 +39,6 @@ async function makePayment(data) {
     if (bookingDetails.status == CANCELLED) {
       throw new AppError('The booking has expired', StatusCodes.BAD_REQUEST);
     }
-    console.log(bookingDetails);
     const bookingTime = new Date(bookingDetails.createdAt);
     const currentTime = new Date();
     if (currentTime - bookingTime > 300000) {
@@ -65,7 +64,6 @@ async function cancelBooking(bookingId) {
   const transaction = await db.sequelize.transaction();
   try {
     const bookingDetails = await bookingRepository.get(bookingId, transaction);
-    console.log(bookingDetails);
     if (bookingDetails.status == CANCELLED) {
       await transaction.commit();
       return true;
@@ -85,13 +83,11 @@ async function cancelBooking(bookingId) {
 
 async function cancelOldBookings() {
   try {
-    console.log("Inside service")
     const time = new Date(Date.now() - 1000 * 300);
     const response = await bookingRepository.cancelOldBookings(time);
-
     return response;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
