@@ -2,6 +2,8 @@ const CrudRepository = require("./crud-repository");
 const { Booking } = require('../models');
 const { Op } = require("sequelize");
 const { Enums } = require('../utils/common');
+const AppError = require("../utils/errors/app-error");
+const { StatusCodes } = require("http-status-codes");
 const { CANCELLED, BOOKED } = Enums.BOOKING_STATUS;
 
 class BookingRepository extends CrudRepository {
@@ -17,7 +19,7 @@ class BookingRepository extends CrudRepository {
   async get(data, transaction) {
     const response = await Booking.findByPk(data, { transaction: transaction });
     if (!response) {
-      throw new AppError('Not able to fund the resource', StatusCodes.NOT_FOUND);
+      throw new AppError('Not able to found the resource', StatusCodes.NOT_FOUND);
     }
     return response;
   }
